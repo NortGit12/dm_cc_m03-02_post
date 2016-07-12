@@ -32,6 +32,8 @@ class PostController {
     
     init() {
         
+        self.posts = []
+        
         fetchPosts{ (posts) in
             
             if let posts = posts {
