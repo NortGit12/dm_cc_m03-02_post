@@ -85,6 +85,38 @@ class PostController {
         }
     }
     
+    func addPost(username: String, text: String) {
+        
+        let post = Post(username: username, text: text)
+        
+        guard let url = post.endpoint else { return }
+        
+        NetworkController.performRequestForURL(url, httpMethod: .Post, body: post.jsonData) { (data, error) in
+            
+            let responseDataString = NSString(data: data!, encoding: NSUTF8StringEncoding) ?? ""
+            
+            if error != nil {
+                print("Error: \(error)")
+            } else if responseDataString.containsString("error") {
+                print("Error: \(responseDataString)")
+            } else {
+                print("data = \(data)")
+            }
+            
+            self.fetchPosts({ (posts) in
+                
+                if let posts = posts {
+                    
+                    self.posts = posts
+                    
+                }
+                
+            })
+            
+        }
+        
+    }
+    
 }
 
 protocol PostControllerDelegate: class {
