@@ -23,6 +23,16 @@ class PostsListTableViewController: UITableViewController, CustomCellDelegate, P
         tableView.estimatedRowHeight = 200
         
         postController.delegate = self
+        
+        self.refreshControl?.addTarget(self, action: #selector(PostsListTableViewController.handleRefresh(_:)), forControlEvents: UIControlEvents.ValueChanged)
+    }
+    
+    // MARK: - Support Refresh
+    
+    func handleRefresh(refreshControl: UIRefreshControl) {
+        
+        self.tableView.reloadData()
+        refreshControl.endRefreshing()
     }
     
     // MARK: - PostControllerDelegate
