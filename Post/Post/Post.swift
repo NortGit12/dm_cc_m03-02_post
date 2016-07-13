@@ -22,6 +22,26 @@ struct Post {
     private let timestampKey = "timestamp"
     private let identifierKey = "identifier"
     
+    var endpoint: NSURL? {
+        
+        return NSURL(string: PostController.baseURL)?
+            .URLByAppendingPathComponent(id.UUIDString)
+            .URLByAppendingPathExtension(".json")
+        
+    }
+    
+    var dictionaryValue: [String : AnyObject] {
+        
+        return [usernameKey: username, textKey: text, timestampKey: timestamp]
+        
+    }
+    
+    var jsonData: NSData? {
+        
+        return try? NSJSONSerialization.dataWithJSONObject(dictionaryValue, options: .PrettyPrinted)
+        
+    }
+    
     // MARK: - Initializer(s)
     
     init(username: String, text: String) {

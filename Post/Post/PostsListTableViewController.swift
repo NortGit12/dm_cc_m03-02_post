@@ -33,6 +33,8 @@ class PostsListTableViewController: UITableViewController, CustomCellDelegate, P
         
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         
+        
+        
         self.tableView.reloadData()
         refreshControl.endRefreshing()
         
