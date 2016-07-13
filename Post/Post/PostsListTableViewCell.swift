@@ -34,7 +34,7 @@ class PostsListTableViewCell: UITableViewCell {
     
     func updateWithPost(post: Post) {
         
-        nameLabel.text = post.username
+        
         
         let formatter = NSDateFormatter()
         formatter.dateStyle = .MediumStyle
@@ -44,7 +44,9 @@ class PostsListTableViewCell: UITableViewCell {
         
         let dateString = formatter.stringFromDate(date)
         
-        contentLabel.text = "\(dateString) - \(post.text)"
+        nameLabel.text = post.text
+        
+        contentLabel.text = "\(dateString) - \(post.username)"
         
     }
 
