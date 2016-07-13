@@ -14,24 +14,13 @@ class PostsListTableViewController: UITableViewController, PostControllerDelegat
     
     var postController = PostController()
     
-//    var posts: [Post]?
-    
     // MARK: - General
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        postController.fetchPosts { (posts) in
-            
-            print("PostsListTableViewController - Posts: \(posts)")
-            
-//            if let posts = posts {
-//                
-//                self.posts = posts
-//                
-//            }
-            
-        }
+        
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 200
         
         postController.delegate = self
     }
@@ -56,6 +45,9 @@ class PostsListTableViewController: UITableViewController, PostControllerDelegat
         let cell = tableView.dequeueReusableCellWithIdentifier("postsListCell", forIndexPath: indexPath)
 
         let post = postController.posts[indexPath.row]
+        
+        cell.textLabel?.numberOfLines = 0
+        cell.detailTextLabel?.numberOfLines = 0
         
         cell.textLabel?.text = post.username
         cell.detailTextLabel?.text = post.text
