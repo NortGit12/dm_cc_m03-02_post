@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PostsListTableViewController: UITableViewController, PostControllerDelegate {
+class PostsListTableViewController: UITableViewController, CustomCellDelegate, PostControllerDelegate {
     
     // MARK: - Stored Properties
     
@@ -42,15 +42,16 @@ class PostsListTableViewController: UITableViewController, PostControllerDelegat
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("postsListCell", forIndexPath: indexPath)
+        guard let cell = tableView.dequeueReusableCellWithIdentifier("postsListCell", forIndexPath: indexPath) as? PostsListTableViewCell else { return UITableViewCell()}
+        
+        cell.delegate = self
 
         let post = postController.posts[indexPath.row]
         
         cell.textLabel?.numberOfLines = 0
         cell.detailTextLabel?.numberOfLines = 0
         
-        cell.textLabel?.text = post.username
-        cell.detailTextLabel?.text = post.text
+        cell.updateWithPost(post)
 
         return cell
     }
