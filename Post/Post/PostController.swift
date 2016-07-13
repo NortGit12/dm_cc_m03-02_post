@@ -25,7 +25,6 @@ class PostController {
         didSet {
             delegate?.postsUpdated(posts)
         }
-        
     }
     
     // MARK: - Initializer(s)
@@ -41,9 +40,7 @@ class PostController {
                 self.posts = posts
                 
             }
-
         }
-        
     }
     
     // MARK: - Method(s)
@@ -67,8 +64,6 @@ class PostController {
                     return
             }
             
-            //            print("jsonDictionary = \(jsonDictionary)")
-            
             var postsFromFeed: [Post] = []
             
             for (identifier, dictionary) in jsonDictionary {
@@ -87,9 +82,7 @@ class PostController {
                 completion(posts: postsFromFeed)
                 
             })
-            
         }
-        
     }
     
 }

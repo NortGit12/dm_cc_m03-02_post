@@ -19,10 +19,10 @@ class PostsListTableViewController: UITableViewController, CustomCellDelegate, P
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        postController.delegate = self
+        
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 200
-        
-        postController.delegate = self
         
         self.refreshControl?.addTarget(self, action: #selector(PostsListTableViewController.handleRefresh(_:)), forControlEvents: UIControlEvents.ValueChanged)
     }
@@ -31,15 +31,23 @@ class PostsListTableViewController: UITableViewController, CustomCellDelegate, P
     
     func handleRefresh(refreshControl: UIRefreshControl) {
         
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        
         self.tableView.reloadData()
         refreshControl.endRefreshing()
+        
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
     }
     
     // MARK: - PostControllerDelegate
     
     func postsUpdated(posts: [Post]) {
         
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        
         tableView.reloadData()
+        
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         
     }
 
@@ -65,28 +73,5 @@ class PostsListTableViewController: UITableViewController, CustomCellDelegate, P
 
         return cell
     }
-    
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            // Delete the row from the data source
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-        } else if editingStyle == .Insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

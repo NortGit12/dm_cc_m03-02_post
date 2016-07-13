@@ -52,6 +52,4 @@ class PostsListTableViewCell: UITableViewCell {
 
 protocol CustomCellDelegate: class {
     
-    
-    
 }
