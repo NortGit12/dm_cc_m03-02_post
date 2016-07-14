@@ -60,6 +60,12 @@ struct Post {
         return "\(usernameKey) = \(username), \(textKey) = \(text), timestamp as dateString = \(dateString), \(identifierKey) (UUIDString) = \(identifier.UUIDString)"
     }
     
+    var queryTimestamp: NSTimeInterval {
+        
+        return timestamp - 1
+        
+    }
+    
     // MARK: - Initializer(s)
     
     init(username: String, text: String) {
