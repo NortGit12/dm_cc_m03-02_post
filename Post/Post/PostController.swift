@@ -16,7 +16,7 @@ class PostController {
     
     static let baseURL = "https://devmtn-post.firebaseio.com/"
     
-    static let endpoint = "posts.json"
+    static let endpoint = "posts"
     
     static var url = NSURL(string: baseURL)?.URLByAppendingPathComponent(endpoint)
     
@@ -45,22 +45,28 @@ class PostController {
     
     // MARK: - Method(s)
     
-    func fetchPosts(completion: (posts: [Post]?) -> Void) {
+    func fetchPosts(completion: ((posts: [Post]?) -> Void)?) {
         
-        guard let unwrappedURL = PostController.url else {
-            
-            completion(posts: nil)
+        let completeURL = PostController.url?.URLByAppendingPathExtension("json")
+        
+        guard let unwrappedURL = completeURL else {
+            if let completion = completion {
+                completion(posts: nil)
+            }
             return
             
         }
+        
+        //        print("unwrappedURL = \(unwrappedURL)")
         
         NetworkController.performRequestForURL(unwrappedURL, httpMethod: .Get) { (data, error) in
             
             guard let data = data
                 , jsonDictionary = (try? NSJSONSerialization.JSONObjectWithData(data, options: [])) as? [String : AnyObject]
                 else {
-                    
-                    completion(posts: nil)
+                    if let completion = completion {
+                        completion(posts: nil)
+                    }
                     return
             }
             
@@ -79,7 +85,9 @@ class PostController {
             
             dispatch_async(dispatch_get_main_queue(), {
                 self.posts = postsFromFeed
-                completion(posts: postsFromFeed)
+                if let completion = completion {
+                    completion(posts: postsFromFeed)
+                }
                 
             })
         }
@@ -91,30 +99,43 @@ class PostController {
         
         guard let url = post.endpoint else { return }
         
-        NetworkController.performRequestForURL(url, httpMethod: .Post, body: post.jsonData) { (data, error) in
+        print("\npost (description) = \(post.descriptionString)")
+        
+        print("\nurl for post call = \(url)")
+        
+        print("\npost.jsonData = \(post.jsonData)\n")
+        
+        /*
+         guard let jsonDictionary = (try? NSJSONSerialization.JSONObjectWithData(post.jsonData!, options: [])) as? [String : AnyObject]
+         else {
+         
+         print("JSON couldn't be deserialized")
+         return
+         
+         }
+         
+         print("jsonDictionary (after deserialization) = \(jsonDictionary)")
+         */
+        
+        
+        NetworkController.performRequestForURL(url, httpMethod: .Put, body: post.jsonData) { (data, error) in
             
             let responseDataString = NSString(data: data!, encoding: NSUTF8StringEncoding) ?? ""
             
             if error != nil {
-                print("Error: \(error)")
+                
+                print("Error (object): \(error)")
+                
             } else if responseDataString.containsString("error") {
-                print("Error: \(responseDataString)")
+                
+                print("Error (message): \(responseDataString)")
+                
             } else {
-                print("data = \(data)")
+                
+                print("Successfully saved data to the endpoint.  \nResponse: \(responseDataString)")
+                
             }
-            
-            self.fetchPosts({ (posts) in
-                
-                if let posts = posts {
-                    
-                    self.posts = posts
-                    
-                }
-                
-            })
-            
         }
-        
     }
     
 }

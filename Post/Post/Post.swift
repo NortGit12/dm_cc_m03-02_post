@@ -15,18 +15,32 @@ struct Post {
     let username: String
     let text: String
     let timestamp: NSTimeInterval
-    let id: NSUUID
+    let identifier: NSUUID
     
     private let usernameKey = "username"
     private let textKey = "text"
     private let timestampKey = "timestamp"
     private let identifierKey = "identifier"
     
+    var dateString: String {
+        
+        let formatter = NSDateFormatter()
+        formatter.dateStyle = .MediumStyle
+        formatter.timeStyle = .MediumStyle
+        
+        let date = NSDate(timeIntervalSince1970: timestamp)
+        
+        return formatter.stringFromDate(date)
+        
+    }
+    
     var endpoint: NSURL? {
         
-        return NSURL(string: PostController.baseURL)?
-            .URLByAppendingPathComponent(id.UUIDString)
-            .URLByAppendingPathExtension(".json")
+        guard let url = PostController.url else { return nil }
+        
+        return url
+            .URLByAppendingPathComponent(identifier.UUIDString)
+            .URLByAppendingPathExtension("json")
         
     }
     
@@ -42,14 +56,18 @@ struct Post {
         
     }
     
+    var descriptionString: String {
+        return "\(usernameKey) = \(username), \(textKey) = \(text), timestamp as dateString = \(dateString), \(identifierKey) (UUIDString) = \(identifier.UUIDString)"
+    }
+    
     // MARK: - Initializer(s)
     
     init(username: String, text: String) {
         
         self.username = username
         self.text = text
-        self.timestamp = NSTimeInterval(NSTimeIntervalSince1970)
-        self.id = NSUUID()
+        self.timestamp = NSDate().timeIntervalSince1970
+        self.identifier = NSUUID()
         
     }
     
@@ -66,7 +84,7 @@ struct Post {
         
         guard let identifier = NSUUID(UUIDString: identifier) else { return nil }
         
-        self.id = identifier
+        self.identifier = identifier
         
         
     }

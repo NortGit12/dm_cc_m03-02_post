@@ -83,7 +83,13 @@
                             <outlet property="delegate" destination="ayR-fn-Hbb" id="a7a-Ry-syC"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="9Dp-xy-X4X"/>
+                    <navigationItem key="navigationItem" id="9Dp-xy-X4X">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="oRS-OF-8tb">
+                            <connections>
+                                <action selector="addButtonTapped:" destination="ayR-fn-Hbb" id="TdA-LO-5yM"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="vQC-AX-shn">
                         <autoresizingMask key="autoresizingMask"/>
                     </refreshControl>

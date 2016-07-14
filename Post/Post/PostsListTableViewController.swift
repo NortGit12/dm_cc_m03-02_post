@@ -33,7 +33,7 @@ class PostsListTableViewController: UITableViewController, CustomCellDelegate, P
         
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         
-        
+        postController.fetchPosts(nil)
         
         self.tableView.reloadData()
         refreshControl.endRefreshing()
@@ -41,11 +41,24 @@ class PostsListTableViewController: UITableViewController, CustomCellDelegate, P
         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
     }
     
+    // MARK: - Action(s)
+    
+    @IBAction func addButtonTapped(sender: UIBarButtonItem) {
+        
+        presentNewPostAlert()
+        
+        tableView.reloadData()
+        
+    }
+    
+    
     // MARK: - PostControllerDelegate
     
     func postsUpdated(posts: [Post]) {
         
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        
+        postController.fetchPosts(nil)
         
         tableView.reloadData()
         
@@ -74,6 +87,74 @@ class PostsListTableViewController: UITableViewController, CustomCellDelegate, P
         cell.updateWithPost(post)
 
         return cell
+    }
+    
+    // MARK: - Method(s)
+    
+    func presentNewPostAlert() {
+        
+        let postItemAlertController = UIAlertController(title: "New Post", message: "Update your status", preferredStyle: .Alert)
+        
+        postItemAlertController.addTextFieldWithConfigurationHandler { usernameTextField in
+            
+            usernameTextField.text = ""
+            usernameTextField.placeholder = "Username..."
+            
+        }
+        
+        postItemAlertController.addTextFieldWithConfigurationHandler { messageTextField in
+            
+            messageTextField.text = ""
+            messageTextField.placeholder = "Message..."
+            
+        }
+        
+        let postItemAction = UIAlertAction(title: "Post", style: .Default) { (action) in
+            
+            guard let usernameTextField = postItemAlertController.textFields?[0]
+                , username = usernameTextField.text
+                , itemTextField = postItemAlertController.textFields?[1]
+                , message = itemTextField.text
+                else { return }
+            
+            if username.characters.count == 0 || message.characters.count == 0 {
+                
+                self.presentErrorAlert()
+                
+            } else {
+            
+                self.postController.addPost(username, text: message)
+                
+            }
+            
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        
+        postItemAlertController.addAction(postItemAction)
+        postItemAlertController.addAction(cancelAction)
+        
+        presentViewController(postItemAlertController, animated: true, completion: nil)
+        
+    }
+    
+    func presentErrorAlert() {
+        
+        let alertController = UIAlertController(title: "Missing Information", message: "Required information is missing (username and/or message).  Enter the required text and try again.", preferredStyle: .Alert)
+        
+        let tryAgainAction = UIAlertAction(title: "Try again", style: .Default) { placeholder in
+            
+            self.presentNewPostAlert()
+            
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        
+        alertController.addAction(tryAgainAction)
+        alertController.addAction(cancelAction)
+        
+        presentViewController(alertController, animated: true, completion: nil)
+        
     }
 
 }
