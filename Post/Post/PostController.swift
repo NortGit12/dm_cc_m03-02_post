@@ -45,7 +45,15 @@ class PostController {
     
     // MARK: - Method(s)
     
-    func fetchPosts(completion: ((posts: [Post]?) -> Void)? = nil) {
+    func fetchPosts(reset: Bool = true, completion: ((posts: [Post]?) -> Void)? = nil) {
+        
+        let queryEndInterval = reset ? NSDate().timeIntervalSince1970 : posts.last?.timestamp ?? NSDate().timeIntervalSince1970
+        
+        let urlParameters = [
+            "orderBy": "\"timestamp\"",
+            "endAt": "\(queryEndInterval)",
+            "limitToLast": "15",
+            ]
         
         let completeURL = PostController.url?.URLByAppendingPathExtension("json")
         
@@ -59,7 +67,7 @@ class PostController {
         
         //        print("unwrappedURL = \(unwrappedURL)")
         
-        NetworkController.performRequestForURL(unwrappedURL, httpMethod: .Get) { (data, error) in
+        NetworkController.performRequestForURL(unwrappedURL, httpMethod: .Get, urlParameters: urlParameters) { (data, error) in
             
             guard let data = data
                 , jsonDictionary = (try? NSJSONSerialization.JSONObjectWithData(data, options: [])) as? [String : AnyObject]
@@ -85,9 +93,18 @@ class PostController {
             
             dispatch_async(dispatch_get_main_queue(), {
                 
-                self.posts = postsFromFeed
+                if reset == true {
+                    
+                    self.posts = postsFromFeed
+                    
+                } else {
+                    
+                    self.posts.appendContentsOf(postsFromFeed)
+                    
+                }
                 
                 if let completion = completion {
+                    
                     completion(posts: postsFromFeed)
                 }
                 
@@ -138,6 +155,8 @@ class PostController {
                 
             }
         }
+        
+        fetchPosts()
     }
     
 }

@@ -36,6 +36,8 @@ class PostsListTableViewController: UITableViewController, CustomCellDelegate, P
         
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         
+        postController.fetchPosts()
+        
         self.tableView.reloadData()
         refreshControl.endRefreshing()
         
@@ -56,7 +58,6 @@ class PostsListTableViewController: UITableViewController, CustomCellDelegate, P
     
     func postsUpdated(posts: [Post]) {
         
-        postController.fetchPosts()
         tableView.reloadData()
         
     }
@@ -64,7 +65,7 @@ class PostsListTableViewController: UITableViewController, CustomCellDelegate, P
     // MARK: - Table view data source
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return postController.posts.count ?? 0
+        return postController.posts.count
     }
 
     
@@ -82,6 +83,24 @@ class PostsListTableViewController: UITableViewController, CustomCellDelegate, P
         cell.updateWithPost(post)
 
         return cell
+    }
+    
+    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+        if (indexPath.row + 1) >= postController.posts.count {
+            
+            // Get the next batch of cells
+            
+            postController.fetchPosts(false, completion: { (posts) in
+                
+                if posts != nil {
+                    
+                    self.tableView.reloadData()
+                    
+                }
+                
+            })
+        }
     }
     
     // MARK: - Method(s)
