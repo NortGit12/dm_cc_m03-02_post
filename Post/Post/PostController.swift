@@ -45,7 +45,7 @@ class PostController {
     
     // MARK: - Method(s)
     
-    func fetchPosts(completion: ((posts: [Post]?) -> Void)?) {
+    func fetchPosts(completion: ((posts: [Post]?) -> Void)? = nil) {
         
         let completeURL = PostController.url?.URLByAppendingPathExtension("json")
         
@@ -84,7 +84,9 @@ class PostController {
             postsFromFeed = postsFromFeed.sort{ $0.timestamp > $1.timestamp }
             
             dispatch_async(dispatch_get_main_queue(), {
+                
                 self.posts = postsFromFeed
+                
                 if let completion = completion {
                     completion(posts: postsFromFeed)
                 }

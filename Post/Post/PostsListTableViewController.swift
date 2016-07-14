@@ -14,6 +14,8 @@ class PostsListTableViewController: UITableViewController, CustomCellDelegate, P
     
     var postController = PostController()
     
+    var posts: [Post] = []
+    
     // MARK: - General
 
     override func viewDidLoad() {
@@ -25,6 +27,7 @@ class PostsListTableViewController: UITableViewController, CustomCellDelegate, P
         tableView.estimatedRowHeight = 200
         
         self.refreshControl?.addTarget(self, action: #selector(PostsListTableViewController.handleRefresh(_:)), forControlEvents: UIControlEvents.ValueChanged)
+        
     }
     
     // MARK: - Support Refresh
@@ -33,12 +36,11 @@ class PostsListTableViewController: UITableViewController, CustomCellDelegate, P
         
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         
-        postController.fetchPosts(nil)
-        
         self.tableView.reloadData()
         refreshControl.endRefreshing()
         
         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+        
     }
     
     // MARK: - Action(s)
@@ -47,8 +49,6 @@ class PostsListTableViewController: UITableViewController, CustomCellDelegate, P
         
         presentNewPostAlert()
         
-        tableView.reloadData()
-        
     }
     
     
@@ -56,13 +56,8 @@ class PostsListTableViewController: UITableViewController, CustomCellDelegate, P
     
     func postsUpdated(posts: [Post]) {
         
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        
-        postController.fetchPosts(nil)
-        
+        postController.fetchPosts()
         tableView.reloadData()
-        
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         
     }
 
