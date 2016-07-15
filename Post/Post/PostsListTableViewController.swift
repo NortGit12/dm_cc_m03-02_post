@@ -14,8 +14,6 @@ class PostsListTableViewController: UITableViewController, CustomCellDelegate, P
     
     var postController = PostController()
     
-    var posts: [Post] = []
-    
     // MARK: - General
 
     override func viewDidLoad() {
